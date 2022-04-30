@@ -41,4 +41,13 @@ class User extends Authenticatable
     protected $casts = [
         'phone_number_verified_at' => 'datetime',
     ];
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }
