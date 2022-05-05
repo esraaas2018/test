@@ -20,4 +20,9 @@ Route::post('/login', [UserController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/logout', [UserController::class, 'logout']);
     Route::apiResource('personal_tasks', "PersonalTaskController");
-});
+    Route::group(['middleware' => 'authorized'], function(){
+        Route::apiResource('personal_tasks', "PersonalTaskController")->except('index','store');
+        Route::apiResource('projects', "ProjectController")->except('index','store');
+
+    });
+    });

@@ -24,7 +24,7 @@ class ProjectController extends Controller
     }
     public function update(Request $request, Project $project)
     {
-        //
+        return 'hello';
     }
     public function destroy(Project $project)
     {

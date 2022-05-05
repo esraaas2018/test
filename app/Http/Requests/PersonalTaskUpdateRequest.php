@@ -15,8 +15,9 @@ class PersonalTaskUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-      $task =$this->route('personal_task');
-        return ($task->user_id == Auth::id());
+     // $task =$this->route('personal_task');
+      //  return ($task->user_id == Auth::id());
+        return true;
     }
 
     /**
@@ -27,7 +28,7 @@ class PersonalTaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'required|max:255',
+         'name'=>  'required|max:255',
             'deadline'=>'nullable|date'
         ];
     }

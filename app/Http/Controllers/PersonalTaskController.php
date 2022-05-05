@@ -24,9 +24,8 @@ class PersonalTaskController extends Controller
 
     public function show(PersonalTask $personal_task)
     {
-        if(Auth::id()==$personal_task->user_id)
         return response()->json($personal_task);
-        return response()->json(['message'=>'Unauthorized'],401);
+       // return response()->json(['message'=>'Unauthorized'],401);
 
     }
 
@@ -41,11 +40,8 @@ class PersonalTaskController extends Controller
 
     public function destroy(PersonalTask $personal_task)
     {
-        if($personal_task->user_id==Auth::id())
-        {
             $personal_task->delete();
             return  response()->json(['message'=>'task deleted.']);
-        }
-        return response()->json(['message'=>'Unauthorized'],401);
+
     }
 }
