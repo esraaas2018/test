@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonalTaskStoreRequest;
+use App\Http\Requests\PersonalTaskUpdateRequest;
 use App\Models\PersonalTask;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PersonalTaskController extends Controller
@@ -15,16 +16,10 @@ class PersonalTaskController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(PersonalTaskStoreRequest $request)
     {
-        $request->validate(['name'=>'required']);
-        return response()->json( PersonalTask::create([
-            'name'=>$request->name,
-            'description'=>$request->description,
-            'deadline'=> $request->deadline,
-            'project_id'=>$request->project_id,
-            'user_id'=>Auth::id(),
-        ])
+        return response()->json( PersonalTask::create(
+     $request->all()+ ['user_id'=>Auth::id()])
    );}
 
     public function show(PersonalTask $personal_task)
@@ -37,16 +32,10 @@ class PersonalTaskController extends Controller
 
 
 
-    public function update(PersonalTask $personal_task,Request $request)
+    public function update(PersonalTask $personal_task,PersonalTaskUpdateRequest $request)
     {
-        $this->validate($request,['name'=>'required']);
-        if($personal_task->user_id==Auth::id())
-        {
-            $personal_task->update($request->all());
-            return  response()->json(['data'=>$personal_task,'message'=>'task edited.']);
-        }
-        return response()->json(['message'=>'Unauthorized'],401);
-
+          $personal_task->update($request->all());
+          return  response()->json(['data'=>$personal_task,'message'=>'task edited.']);
     }
 
 
