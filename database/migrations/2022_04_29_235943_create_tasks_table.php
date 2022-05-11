@@ -20,7 +20,7 @@ class CreateTasksTable extends Migration
             $table->date('deadline');
             $table->enum('status',['sprint','pending','inprocessing','completed']);
             $table->foreignId('sprint_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

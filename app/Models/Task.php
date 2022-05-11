@@ -12,7 +12,7 @@ class Task extends Model
         'name',
         'deadline',
         'sprint_id',
-        'assignee_id',
+        'user_id',
         'status'
     ];
     public function sprint()
