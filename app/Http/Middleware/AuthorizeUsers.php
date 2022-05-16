@@ -26,10 +26,10 @@ class AuthorizeUsers
 
         $models_array = explode('|',$model);
         $specified_models = [PersonalTask::class,Project::class,Task::class];
-        $authrized_models= array_intersect($models_array, $specified_models);
+        $authorized_models= array_intersect($models_array, $specified_models);
         $pars = $request->route()->parameters();
         $entity= head($pars);
-        if(in_array(get_class($entity), $authrized_models)){
+        if(in_array(get_class($entity), $authorized_models)){
               if($entity->user_id!=Auth::id())
                 abort(response()->json('Unauthorized', 403));
         }
