@@ -12,7 +12,7 @@ class PersonalTaskController extends Controller
 
     public function index()
     {
-        return response()->json(PersonalTask::where('user_id',Auth::id())->get());
+       return response()->json(PersonalTask::where('user_id',Auth::id())->get());
     }
 
 
@@ -25,7 +25,6 @@ class PersonalTaskController extends Controller
     public function show(PersonalTask $personal_task)
     {
         return response()->json($personal_task);
-       // return response()->json(['message'=>'Unauthorized'],401);
 
     }
 

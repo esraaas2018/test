@@ -18,9 +18,11 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->date('deadline');
-            $table->enum('status',['sprint','pending','inprocessing','completed']);
+            $table->enum('status',['sprint','pending','in_progress','completed']);
             $table->foreignId('sprint_id')->constrained()->cascadeOnDelete();
+            $table->enum('priority', ['low', 'medium', 'high','severe']);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('agenda_id')->constrained()->cascadeOnDelete()->nullable();
             $table->timestamps();
         });
     }
