@@ -22,7 +22,6 @@ class CreateTasksTable extends Migration
             $table->foreignId('sprint_id')->constrained()->cascadeOnDelete();
             $table->enum('priority', ['low', 'medium', 'high','severe']);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('agenda_id')->constrained()->cascadeOnDelete()->nullable();
             $table->timestamps();
         });
     }
