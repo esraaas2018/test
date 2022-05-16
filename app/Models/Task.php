@@ -13,8 +13,7 @@ class Task extends Model
         'deadline',
         'sprint_id',
         'user_id',
-        'status',
-        'agenda_id'
+        'status'
     ];
     public function sprint()
     {
@@ -23,9 +22,5 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class,);
-    }
-    public function agenda()
-    {
-        return $this->belongsTo(Agenda::class);
     }
 }
