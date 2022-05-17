@@ -27,6 +27,7 @@ class SprintController extends Controller
     {
        return response()->json(['sprint' => $sprint]);
     }
+
     public function update(SprintUpdateRequest $request, Project $project,Sprint $sprint)
     {
         $sprint->update($request->all());

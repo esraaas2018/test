@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\SprintController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AcceptJson;
 use App\Models\PersonalTask;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,17 +25,31 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
-Route::group(['middleware' => 'auth:sanctum' ],
-    function () {
-        Route::get('/logout', [UserController::class, 'logout']);
-        Route::apiResource('projects', "ProjectController");
-        Route::apiResource('projects/{project}/sprints', "SprintController");
-        Route::apiResource('projects/{project}/sprints/{sprint}/tasks', "TaskController");
-        Route::apiResource('personal_tasks', "PersonalTaskController");
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/logout', [UserController::class, 'logout']);
+    Route::apiResource('projects', "ProjectController");
 
-        Route::group(['middleware' => 'authorized:'.Project::class.'|'.PersonalTask::class], function () {
-            Route::apiResource('personal_tasks', "PersonalTaskController")->except('index', 'store');
-            //Route::apiResource('projects', "ProjectController")->except('index', 'store');
+    Route::apiResource('sprints', "SprintController");
+    Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
 
-        });
-    });
+    Route::apiResource('tasks', "TaskController")->except('store');
+    Route::get('/projects/{project}/tasks',  [TaskController::class, 'index']);
+    Route::put('/tasks/{task}/change-status',  [TaskController::class, 'changeStatus']);
+    Route::post('/sprints/{sprint}/tasks',  [TaskController::class, 'store']);
+
+    Route::apiResource('personal_tasks', "PersonalTaskController");
+});
+
+Route::get('/test', function (Request $request) {
+    $project = Project::first();
+
+    $user = User::orderByDesc('id')->first();
+    return $user->createToken('test')->plainTextToken;
+});
+
+Route::get('/test2', function (Request $request) {
+    $project = Project::first();
+    $user = Auth::user();
+//    return $user->createToken('test')->plainTextToken;
+    dd(Task::all()->pluck('id')->toArray());
+})->middleware('auth:sanctum');

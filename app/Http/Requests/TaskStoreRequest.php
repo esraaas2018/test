@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TaskStoreRequest extends FormRequest
@@ -13,7 +14,7 @@ class TaskStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return TaskPolicy::create(Auth::user(), $this->route()->task);
     }
 
     /**

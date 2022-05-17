@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TaskChangeStatusRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class TaskChangeStatusRequest extends FormRequest
      */
     public function authorize()
     {
-        return TaskPolicy::assUpdate();
+        return TaskPolicy::changeStatus(Auth::user(), $this->route()->task);
     }
 
     /**
@@ -25,7 +26,7 @@ class TaskChangeStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => ['in:in_progress']
+            'status' => ['in:spring,pending,in_progress,completed']
         ];
     }
 }

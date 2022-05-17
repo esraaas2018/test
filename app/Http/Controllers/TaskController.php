@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SprintStoreRequest;
 use App\Http\Requests\SprintUpdateRequest;
+use App\Http\Requests\TaskChangeStatusRequest;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Project;
@@ -18,21 +19,21 @@ use Illuminate\Testing\AssertableJsonString;
 
 class TaskController extends Controller
 {
-    public function index(Project $project , Sprint $sprint)
+    public function index(Project $project)
     {
-        $tasks = Task::query()->isass()->orWhere->isadd($project,$sprint)->get();
-        return response()->json(['tasks:' => $tasks]);
+        //TaskScope applied
+
+        $tasks = $project->tasks;
+        return apiResponse($tasks);
     }
 
-    public function store(Project $project,Sprint $sprint,TaskStoreRequest $request )
+    public function store(Sprint $sprint,TaskStoreRequest $request )
     {
-        //dd(Gate::allows('create-task',$project));
         if(Gate::allows('create-task',$project)){
             $task = Task::create($request->all() +['status' => 'sprint','sprint_id'=>$sprint->id]);
             return response()->json(['success','Task :' => $task],201);
         }
         return response()->json('unauthorized',403);
-
     }
 
     public function show(Project $project,Sprint $sprint,Task $task)
@@ -45,7 +46,7 @@ class TaskController extends Controller
         return response()->json('unauthorized',403);
 
     }
-    public function update(TaskUpdateRequest $request, Project $project,Sprint $sprint,Task $task)
+    public function update(TaskUpdateRequest $request,Task $task)
     {
         $task->update([
             'name'=>$request->name,
@@ -55,8 +56,11 @@ class TaskController extends Controller
         return apiResponse($task);
     }
 
-    public function changeStatus(TaskChangeStatusRequest $request,$task){
-
+    public function changeStatus(TaskChangeStatusRequest $request,Task $task){
+//        dd($request->all());
+        $task->status = $request->status;
+        $task->save();
+        return apiResponse($task);
     }
 
     public function destroy(Project $project,Sprint $sprint,Task $task)

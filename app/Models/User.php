@@ -42,16 +42,44 @@ class User extends Authenticatable
         'phone_number_verified_at' => 'datetime',
     ];
 
-    public function projects()
+    public function own_projects()
     {
         return $this->hasMany(Project::class);
     }
-    public function tasks()
+
+    public function assigned_tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'user_id');
     }
+
     public function personal_tasks()
     {
         return $this->hasMany(PersonalTask::class);
     }
+
+    public function isAdmin(Project $project)
+    {
+        return $project->user_id == $this->id;
+    }
+
+    public function isAssignee(Project $project)
+    {
+        $tasks_count_of_user = $this->assigned_tasks()->whereHas('project', function ($q) use ($project) {
+            return $q->where('projects.id',$project->id);
+        })->count();
+        return (bool)$tasks_count_of_user;
+    }
+
+    public function role(Project $project)
+    {
+        if($this->isAdmin($project)){
+            $role = 'admin';
+        }else if($this->isAssignee($project)){
+            $role = 'assignee';
+        }else{
+            $role = 'imposter';
+        }
+        return $role;
+    }
+
 }

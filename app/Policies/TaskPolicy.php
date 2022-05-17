@@ -11,33 +11,52 @@ class TaskPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user)
+    public static function viewAny(User $user)
     {
         return  false;
     }
 
-    public function view(User $user,Project $project ,Task $task)
+    public static function view(User $user,Task $task)
     {
-        return $user->id === $project->user_id || $user->id === $task->user_id;
+        $project = $task->project;
+        if($user->role($project) === 'admin'){
+            $allow = true;
+        }else if($user->role($project) === 'assignee'){
+            $allow = $user->id == $task->user_id;
+        }else
+            $allow = false;
+
+        return $allow;
     }
 
-    public function create(User $user,Project $project)
+    public static function create(User $user,Task $task)
     {
-        return $user->id === $project->user_id ;
+        $project = $task->project;
+        return $user->isAdmin($project);
     }
 
-    public static function adminUpdate(User $user, Project $project)
+    public static function Update(User $user, Task $task)
     {
-        return $user->id === $project->user_id ;
+        $project = $task->project;
+        return $user->isAdmin($project);
     }
 
-    public static function assUpdate(User $user,Task $task)
+    public static function changeStatus(User $user,Task $task)
     {
-        return $user->id === $task->user_id ;
-    }
-    public function delete(User $user, Project $project)
-    {
-        return $user->id === $project->user_id;
+        $project = $task->project;
+        if($user->role($project) === 'admin'){
+            $allow = true;
+        }else if($user->role($project) === 'assignee'){
+            $allow = $user->id == $task->user_id;
+        }else
+            $allow = false;
 
+        return $allow;
+    }
+
+    public static function delete(User $user, Task $task)
+    {
+        $project = $task->project;
+        return $user->isAdmin($project);
     }
 }
