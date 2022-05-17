@@ -12,7 +12,7 @@ class FCMService
             'notification' => $notification,
             'data' => $data,
             'vibrate' => 1,
-            'sound' => 1
+            'sound' => 'default'
         ];
 
         $headers = [
