@@ -16,14 +16,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\AssertableJsonString;
+use Modules\Notification\NotificationSender;
 
 class TaskController extends Controller
 {
-    public function index(Project $project)
+    public function index(Request $request, Project $project)
     {
         //TaskScope applied
 
-        $tasks = $project->tasks;
+        $tasks = $project->tasks()->where();
         return apiResponse($tasks);
     }
 
@@ -33,6 +34,7 @@ class TaskController extends Controller
             $task = Task::create($request->all() +['status' => 'sprint','sprint_id'=>$sprint->id]);
             return response()->json(['success','Task :' => $task],201);
         }
+
         return response()->json('unauthorized',403);
     }
 
@@ -46,6 +48,7 @@ class TaskController extends Controller
         return response()->json('unauthorized',403);
 
     }
+
     public function update(TaskUpdateRequest $request,Task $task)
     {
         $task->update([

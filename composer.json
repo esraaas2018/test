@@ -16,7 +16,8 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
-        "staudenmeir/belongs-to-through": "^2.5"
+        "staudenmeir/belongs-to-through": "^2.5",
+        "kreait/laravel-firebase": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
