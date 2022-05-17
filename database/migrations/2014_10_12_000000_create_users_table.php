@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('fcm_token')->nullable();
             $table->timestamps();
         });
     }

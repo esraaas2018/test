@@ -34,12 +34,5 @@ class AuthorizeUsers
                 abort(response()->json('Unauthorized', 403));
         }
           return $next($request);
-
-
-       //if ($entity->user_id !== Auth::id())
-     //      abort(response()->json('Unauthorized', 403));
-
-      // return $next($request);
-
     }
 }
