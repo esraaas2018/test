@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
-use phpDocumentor\Reflection\Types\True_;
 
-class TaskUpdateRequest extends FormRequest
+class TaskChangeStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +14,7 @@ class TaskUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return TaskPolicy::assUpdate();
     }
 
     /**
@@ -26,10 +25,7 @@ class TaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>['nullable','string'],
-            'deadline'=>['nullable','date'],
-            'description'=>['nullable','string'],
-            'status' => ['nullable','string']
+            'status' => ['in:in_progress']
         ];
     }
 }

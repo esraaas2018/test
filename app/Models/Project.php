@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Scopes\AdminScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+
 
 class Project extends Model
 {
@@ -12,7 +15,20 @@ class Project extends Model
         'name',
         'user_id',
         'deadline',
+        'description'
     ];
+
+//    protected static function boot()
+//    {
+//        parent::boot();
+//        static::addGlobalScope(new AdminScope);
+//    }
+
+//    public function scopeIsAdmain($query)
+//    {
+//        return $query->where('user_id', '=', Auth::id());
+//    }
+//
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -21,8 +37,16 @@ class Project extends Model
     {
         return $this->hasMany(Sprint::class);
     }
+    public function tasks()
+    {
+        return $this->hasManyThrough(
+            Task::class,
+            Sprint::class
+        );
+    }
     public function personal_tasks()
     {
         return $this->hasMany(PersonalTask::class);
     }
+
 }
