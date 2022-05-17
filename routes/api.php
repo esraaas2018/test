@@ -3,6 +3,7 @@
 use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AcceptJson;
 use App\Models\PersonalTask;
 use App\Models\Project;
 use App\Models\Task;
@@ -24,7 +25,7 @@ Route::post('sendNotificationToUser', [UserController::class, 'sendNotificationT
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
-Route::group(['middleware' => 'auth:sanctum'],
+Route::group(['middleware' => 'auth:sanctum' ],
     function () {
         Route::get('/logout', [UserController::class, 'logout']);
         Route::apiResource('projects', "ProjectController");

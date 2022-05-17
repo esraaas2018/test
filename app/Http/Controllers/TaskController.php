@@ -9,80 +9,63 @@ use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Project;
 use App\Models\Sprint;
 use App\Models\Task;
+use App\Policies\TaskPolicy;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\AssertableJsonString;
 
 class TaskController extends Controller
 {
     public function index(Project $project , Sprint $sprint)
     {
-        $user_id= Auth::id();
-        if($user_id == $project->user_id){
-            $tasks = $sprint->tasks()->get();
-            return response()->json(['tasks:' => $tasks]);
-        }
-        $tasks = Task::query()->
-        where('user_id','=',$user_id)->
-        where('sprint_id','=',$sprint->id)->get();
+        $tasks = Task::query()->isass()->orWhere->isadd($project,$sprint)->get();
         return response()->json(['tasks:' => $tasks]);
-
     }
 
     public function store(Project $project,Sprint $sprint,TaskStoreRequest $request )
     {
-        $user_id = Auth::id();
-        //dd($request->user_id);
-        if($user_id == $project->user_id){
-            $task = Task::create([
-                'name'=>$request->name,
-                'sprint_id'=>$sprint->id,
-                'deadline'=>$request->deadline,
-                'description'=>$request->description,
-                'user_id' => $request->user_id,
-                'status' => 'sprint'
-            ]);
-            return response()->json(['success','Task :' => $task]);
+        //dd(Gate::allows('create-task',$project));
+        if(Gate::allows('create-task',$project)){
+            $task = Task::create($request->all() +['status' => 'sprint','sprint_id'=>$sprint->id]);
+            return response()->json(['success','Task :' => $task],201);
         }
-        return response()->json('not allow');
+        return response()->json('unauthorized',403);
+
     }
 
     public function show(Project $project,Sprint $sprint,Task $task)
     {
-        $user_id = Auth::id();
-        if($user_id == $project->user_id || $user_id == $task->user_id){
-
+        if(Gate::allows('view-task',[$project,$task])){
             return response()->json([
                 'task' => $task,
-            ]);
+            ],200);
         }
-        return response()->json('not allow');
+        return response()->json('unauthorized',403);
+
     }
     public function update(TaskUpdateRequest $request, Project $project,Sprint $sprint,Task $task)
     {
-        $user_id = Auth::id();
-        if($user_id == $project->user_id){
-            $task->update([
-                'name'=>$request->name,
-                'deadline'=>$request->deadline,
-                'description'=>$request->description
-            ]);
-            return response()->json(['success','task :' => $task]);
-        }
-        if ($user_id == $task->user_id){
-            $task->update([
-                'status' => $request->status
-            ]);
-            return response()->json(['success','task :' => $task]);
-        }
-        return response()->json('not allow');
+        $task->update([
+            'name'=>$request->name,
+            'deadline'=>$request->deadline,
+            'description'=>$request->description
+        ]);
+        return apiResponse($task);
     }
+
+    public function changeStatus(TaskChangeStatusRequest $request,$task){
+
+    }
+
     public function destroy(Project $project,Sprint $sprint,Task $task)
     {
-        $user_id = Auth::id();
-        if($user_id == $project->user_id){
+        if(Gate::allows('delete-task',$project)){
             $task->delete();
             return response()->json('success');
         }
-        return response()->json('not allow');
+        return response()->json('unauthorized',403);
+
     }
 }

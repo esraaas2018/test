@@ -24,8 +24,8 @@ class SprintUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>['required','string'],
-            'deadline'=>['required','date'],
+            'name'=>['nullable','string'],
+            'deadline'=>['nullable','date'],
             'description'=>['nullable','string']
         ];
     }
