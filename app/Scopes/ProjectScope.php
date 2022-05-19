@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
 
-class AdminScope implements Scope
+class ProjectScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('user_id', '=', Auth::id());
+        $user = Auth::user();
+        return $builder->whereHas('participants', function ($q) use ($user) {
+            return $q->where('users.id',$user->id);
+        });
     }
+
 }

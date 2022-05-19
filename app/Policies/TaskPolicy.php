@@ -41,6 +41,10 @@ class TaskPolicy
         return $user->isAdmin($project);
     }
 
+    public static function assignToUser(User $user, Project $project, User $assignee){
+        return $user->isAdmin($project) && $assignee->isParticipant($project);
+    }
+
     public static function changeStatus(User $user,Task $task)
     {
         $project = $task->project;

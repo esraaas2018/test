@@ -18,17 +18,6 @@ class Project extends Model
         'description'
     ];
 
-//    protected static function boot()
-//    {
-//        parent::boot();
-//        static::addGlobalScope(new AdminScope);
-//    }
-
-//    public function scopeIsAdmain($query)
-//    {
-//        return $query->where('user_id', '=', Auth::id());
-//    }
-//
     public function admin()
     {
         return $this->belongsTo(User::class);
@@ -47,6 +36,11 @@ class Project extends Model
     public function personal_tasks()
     {
         return $this->hasMany(PersonalTask::class);
+    }
+
+    //bring all users in this project
+    public function participants(){
+        return $this->belongsToMany(User::class);
     }
 
 }

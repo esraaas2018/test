@@ -12,21 +12,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function sendNotificationToUser()
-    {
-        $user = Auth::id();
-        FCMService::send(
-            $user->fcm_token,
-            [
-                'title' => '',
-                'body' => '',
-            ],
-            [
-                'message' => 'extra'
-            ],
-        );
 
-    }
+
     public function register(UserRegisterRequest $request){
         $user = User::create([
             'name'=>$request->name,

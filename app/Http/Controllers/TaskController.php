@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\AssertableJsonString;
-use Modules\Notification\NotificationSender;
 
 class TaskController extends Controller
 {
@@ -24,13 +23,13 @@ class TaskController extends Controller
     {
         //TaskScope applied
 
-        $tasks = $project->tasks()->where();
+        $tasks = $project->tasks()->ofUser();
         return apiResponse($tasks);
     }
 
-    public function store(Sprint $sprint,TaskStoreRequest $request )
+    public function store(Sprint $sprint,TaskStoreRequest $request)
     {
-        if(Gate::allows('create-task',$project)){
+        if(Gate::allows('create-task')){
             $task = Task::create($request->all() +['status' => 'sprint','sprint_id'=>$sprint->id]);
             return response()->json(['success','Task :' => $task],201);
         }
@@ -60,7 +59,6 @@ class TaskController extends Controller
     }
 
     public function changeStatus(TaskChangeStatusRequest $request,Task $task){
-//        dd($request->all());
         $task->status = $request->status;
         $task->save();
         return apiResponse($task);

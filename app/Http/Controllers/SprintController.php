@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SprintShowRequest;
 use App\Http\Requests\SprintStoreRequest;
 use App\Http\Requests\SprintUpdateRequest;
+use App\Http\Resources\SprintResource;
 use App\Models\Project;
 use App\Models\Sprint;
 use Illuminate\Http\Request;
@@ -23,9 +25,9 @@ class SprintController extends Controller
             return response()->json(['success','sprint :' => $sprint]);
     }
 
-    public function show(Project $project,Sprint $sprint)
+    public function show(SprintShowRequest $request, Sprint $sprint)
     {
-       return response()->json(['sprint' => $sprint]);
+       return apiResponse(SprintResource::make($sprint));
     }
 
     public function update(SprintUpdateRequest $request, Project $project,Sprint $sprint)

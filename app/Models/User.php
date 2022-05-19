@@ -47,6 +47,12 @@ class User extends Authenticatable
         return $this->hasMany(Project::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class);
+    }
+
+
     public function assigned_tasks()
     {
         return $this->hasMany(Task::class, 'user_id');
@@ -68,6 +74,12 @@ class User extends Authenticatable
             return $q->where('projects.id',$project->id);
         })->count();
         return (bool)$tasks_count_of_user;
+    }
+
+    public function isParticipant(Project $project)
+    {
+        return (bool)$project->participants()->where('users.id', $this->id)->count();
+
     }
 
     public function role(Project $project)
