@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PersonalTaskController;
 use App\Http\Controllers\SprintController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AcceptJson;
@@ -32,13 +33,17 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/logout', [UserController::class, 'logout']);
     Route::apiResource('projects', "ProjectController");
 
-    Route::apiResource('sprints', "SprintController");
+    Route::apiResource('sprints', "SprintController")->except('store');
     Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
 
-    Route::apiResource('tasks', "TaskController")->except('store');
+    Route::apiResource('tasks', "TaskController")->except(['store', 'index']);
+
+    //board
     Route::get('/projects/{project}/tasks',  [TaskController::class, 'index']);
     Route::put('/tasks/{task}/change-status',  [TaskController::class, 'changeStatus']);
     Route::post('/sprints/{sprint}/tasks',  [TaskController::class, 'store']);
+
+    Route::get('/projects/{project}/statuses',  [StatusController::class, 'index']);
 
     Route::apiResource('personal_tasks', "PersonalTaskController");
 });

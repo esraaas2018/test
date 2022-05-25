@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Policies\TaskPolicy;
+use App\Policies\StatusPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class TaskChangeStatusRequest extends FormRequest
+class StatusStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +15,7 @@ class TaskChangeStatusRequest extends FormRequest
      */
     public function authorize()
     {
-        return TaskPolicy::changeStatus(Auth::user(), $this->route()->task);
+        return StatusPolicy::create(Auth::user(), $this->route()->project);
     }
 
     /**
@@ -26,7 +26,7 @@ class TaskChangeStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'status_id' => ['required', 'exists:statuses,id']
+            'name'=>['required','string']
         ];
     }
 }

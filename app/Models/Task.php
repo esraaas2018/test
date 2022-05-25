@@ -16,8 +16,8 @@ class Task extends Model
         'name',
         'deadline',
         'sprint_id',
-//        'user_id',
-        'status',
+        'user_id',
+        'status_id',
         'description'
     ];
 
@@ -39,5 +39,9 @@ class Task extends Model
     public function assignee()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class);
     }
 }

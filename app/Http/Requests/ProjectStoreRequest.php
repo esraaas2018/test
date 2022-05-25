@@ -26,7 +26,9 @@ class ProjectStoreRequest extends FormRequest
         return [
             'name'=>['required','string'],
             'deadline'=>['required','date'],
-            'description'=>['nullable','string']
+            'description'=>['nullable','string'],
+            'statuses' => ['nullable', 'array', 'max:7'],
+            'statuses.*' => ['string', 'max:20']
         ];
     }
 }

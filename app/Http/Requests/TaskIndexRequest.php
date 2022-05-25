@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class TaskChangeStatusRequest extends FormRequest
+class TaskIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +13,7 @@ class TaskChangeStatusRequest extends FormRequest
      */
     public function authorize()
     {
-        return TaskPolicy::changeStatus(Auth::user(), $this->route()->task);
+        return true;
     }
 
     /**
@@ -26,7 +24,7 @@ class TaskChangeStatusRequest extends FormRequest
     public function rules()
     {
         return [
-            'status_id' => ['required', 'exists:statuses,id']
+            'status_id' => ['integer', 'exists:statuses,id']
         ];
     }
 }

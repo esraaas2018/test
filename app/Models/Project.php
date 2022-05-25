@@ -33,10 +33,18 @@ class Project extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function sprints()
     {
         return $this->hasMany(Sprint::class);
     }
+
+
+    public function statuses()
+    {
+        return $this->belongsToMany(Status::class)->withPivot(['order']);
+    }
+
     public function tasks()
     {
         return $this->hasManyThrough(
@@ -44,6 +52,7 @@ class Project extends Model
             Sprint::class
         );
     }
+
     public function personal_tasks()
     {
         return $this->hasMany(PersonalTask::class);

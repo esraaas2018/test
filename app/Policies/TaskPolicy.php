@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Project;
+use App\Models\Sprint;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -29,9 +30,9 @@ class TaskPolicy
         return $allow;
     }
 
-    public static function create(User $user,Task $task)
+    public static function create(User $user,Sprint $sprint)
     {
-        $project = $task->project;
+        $project = $sprint->project;
         return $user->isAdmin($project);
     }
 
