@@ -2,6 +2,10 @@
 
 namespace App\Console;
 
+use App\Models\Task;
+use App\Models\User;
+use App\Services\NotificationSender;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +19,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $tasks = Task::all();
+
+        foreach($tasks as $task){
+            $date_now = Carbon::now();
+            $deadline = Carbon::parse($task->expiry_date);
+            $diff = $deadline ->diffInDays($date_now);
+        NotificationSender::send();
+
+    }
         // $schedule->command('inspire')->hourly();
     }
 

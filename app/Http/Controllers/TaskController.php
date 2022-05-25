@@ -39,6 +39,7 @@ class TaskController extends Controller
             ]);
         return apiResponse($task, 'task created successfully', 201);
 
+        return response()->json('unauthorized',403);
     }
 
     public function show(Project $project, Sprint $sprint, Task $task)
@@ -54,34 +55,27 @@ class TaskController extends Controller
     public function update(TaskUpdateRequest $request, Task $task)
     {
         $task->update([
-            'name' => $request->name,
-            'deadline' => $request->deadline,
-            'description' => $request->description
+            'name'=>$request->name,
+            'deadline'=>$request->deadline,
+            'description'=>$request->description
         ]);
         return apiResponse($task);
     }
 
-    public function changeStatus(TaskChangeStatusRequest $request, Task $task)
-    {
-
-        //// for edward
-        ///
-        ///
-        $project = $task->project;
-        $status = $project->statuses()->firstOrFail([
-            'name' => $request->status
-        ]);
-        $task->status_id = $status->id;
+    public function changeStatus(TaskChangeStatusRequest $request,Task $task){
+//        dd($request->all());
+        $task->status = $request->status;
         $task->save();
         return apiResponse($task);
     }
 
-    public function destroy(Project $project, Sprint $sprint, Task $task)
+    public function destroy(Project $project,Sprint $sprint,Task $task)
     {
-        if (Gate::allows('delete-task', $project)) {
+        if(Gate::allows('delete-task',$project)){
             $task->delete();
             return response()->json('success');
         }
-        return response()->json('unauthorized', 403);
+        return response()->json('unauthorized',403);
+
     }
 }

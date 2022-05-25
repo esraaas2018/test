@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\ProjectPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class PersonalTaskStoreRequest extends FormRequest
+class SprintShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +15,7 @@ class PersonalTaskStoreRequest extends FormRequest
      */
     public function authorize()
     {
-
-        return true;
+        return ProjectPolicy::view(Auth::user(), $this->route()->sprint->project);
     }
 
     /**
@@ -25,10 +26,7 @@ class PersonalTaskStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|max:255',
-            'deadline'=>'nullable|date'
-
+            //
         ];
     }
-
 }
