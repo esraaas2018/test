@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\AdminScope;
+use App\Scopes\ProjectScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,11 @@ class Project extends Model
     public function admin()
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new ProjectScope());
     }
 
     public function sprints()
@@ -49,7 +55,7 @@ class Project extends Model
 
     //bring all users in this project
     public function participants(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'participants');
     }
 
 }

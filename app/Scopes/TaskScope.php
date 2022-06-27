@@ -11,11 +11,11 @@ class TaskScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-//        $user = Auth::user();
-//        return $builder->whereHas('project', function($q) use ($user) {
-//            return $q->where('user_id', $user->id);
-//        })->orWhereHas('assignee', function ($q) use ($user) {
-//            return $q->where('tasks.user_id', $user->id );
-//        });
+        $user = Auth::user();
+        return $builder->whereHas('project', function($q) use ($user) {
+            return $q->where('user_id', $user->id);
+        })->orWhereHas('assignee', function ($q) use ($user) {
+            return $q->where('tasks.user_id', $user->id );
+        });
     }
 }

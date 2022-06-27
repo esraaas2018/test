@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\SprintPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserRegisterRequest extends FormRequest
+class SprintDeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +15,7 @@ class UserRegisterRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return SprintPolicy::delete(Auth::user(),$this->route()->sprint);
     }
 
     /**
@@ -24,9 +26,7 @@ class UserRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required','string','max:255'],
-            'email' =>['required' , 'string' ,'max:255', 'unique:users,email'],
-            'password' => ['required','string', 'min:2', 'max:255' ],
+            //
         ];
     }
 }

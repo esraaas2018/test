@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Policies\ProjectPolicy;
+use App\Policies\SprintPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class SprintShowRequest extends FormRequest
      */
     public function authorize()
     {
-        return ProjectPolicy::view(Auth::user(), $this->route()->sprint->project);
+        return SprintPolicy::view(Auth::user(), $this->route()->sprint);
     }
 
     /**

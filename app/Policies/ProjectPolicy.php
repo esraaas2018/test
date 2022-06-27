@@ -17,4 +17,16 @@ class ProjectPolicy
         return $user->isAdmin($project);
     }
 
+    public static function addParticipant(User $user, Project $project){
+        return $user->isAdmin($project);
+    }
+
+    public static function Update(User $user, Project $project)
+    {
+        return $user->isAdmin($project);
+    }
+    public static function delete(User $user, Project $project)
+    {
+        return $user->isAdmin($project);
+    }
 }

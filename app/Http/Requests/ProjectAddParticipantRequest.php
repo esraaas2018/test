@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\ProjectPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectAddParticipantRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class ProjectAddParticipantRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return ProjectPolicy::addParticipant(Auth::user(), $this->route()->project);
     }
 
     /**

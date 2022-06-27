@@ -17,35 +17,27 @@ class UserController extends Controller
     public function register(UserRegisterRequest $request){
         $user = User::create([
             'name'=>$request->name,
-            'phone_number'=>$request->phone_number,
+            'email'=>$request->email,
             'password'=> Hash::make($request->password)
         ]);
         $token = $user->createToken('token')->plainTextToken;
-        return response()->json([
-            'token' => $token
-        ],201);
+        return apiResponse($token);
     }
 
     public function login(UserLoginRequest $request){
-        $user = User::query()->where('phone_number' , $request->phone_number)->first();
+        $user = User::query()->where('email' , $request->email)->first();
         if($user && Hash::check( $request->password , $user->password )){
             $token = $user->createToken('token')->plainTextToken;
-            return response()->json([
-                'token' => $token
-            ],200);
+            return apiResponse($token);
         }
         else{
-            return response()->json([
-                'message' => "incorrect credentials"
-            ],401);
+            return apiResponse(null,"incorrect credentials",401);
         }
 
     }
 
     public  function logout(){
         auth()->user()->tokens()->delete();
-        return response()->json([
-            'message' => 'logout successfully'
-        ]);
+        return apiResponse(null,'logout successfully');
     }
 }

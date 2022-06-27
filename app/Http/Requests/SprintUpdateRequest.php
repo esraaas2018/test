@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Policies\SprintPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class SprintUpdateRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class SprintUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return SprintPolicy::update(Auth::user(), $this->route()->sprint);
     }
 
     /**

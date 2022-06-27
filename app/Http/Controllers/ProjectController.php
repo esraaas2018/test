@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectAddParticipantRequest;
+use App\Http\Requests\ProjectDeleteRequest;
 use App\Http\Requests\ProjectRevokeParticipantRequest;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
+use App\Http\Resources\ProjectResource;
 use App\Http\Resources\SprintResource;
 use App\Models\Project;
 use App\Models\Status;
@@ -21,9 +23,8 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = Project::get();
-
-        return response()->json(['projects :' => $projects]);
+        $projects = Project::all();
+        return apiResponse(ProjectResource::collection($projects));
     }
 
     public function show(Project $project)
@@ -39,7 +40,6 @@ class ProjectController extends Controller
             'description' => $request->description,
             'user_id' => Auth::id()
         ];
-
         $project = Project::create($data);
 
         //ordering the statuses and merge the defaults
@@ -52,14 +52,17 @@ class ProjectController extends Controller
             $project->statuses()->attach($new_status->id, ['order' => $key]);
         });
 
-        return apiResponse($project);
+        return apiResponse(new ProjectResource($project),'project create successfully',201);
     }
+
     //add user to a project
     public function addUser(ProjectAddParticipantRequest $request, Project $project){
         $user = User::where('email', $request->email)->firstOrFail();
+        if($project->participants()->where('user_id' ,$user->id)->first()){
+            return apiResponse(new ProjectResource($project), 'the user is already there');
+        }
         $project->participants()->attach($user);
-
-        apiResponse($project, 'user added to project successfully');
+        return apiResponse(new ProjectResource($project), 'user added to project successfully');
     }
 
     //revoke user from a project
@@ -69,23 +72,24 @@ class ProjectController extends Controller
             $task->user_id = null;
             $task->save();
         });
-        $user->personal_tasks()->where('project_id', $project->id)->get()->map(function($task){
-            $task->project_id = null;
-            $task->save();
-        });;
-
-        apiResponse($project, 'user revoked to project successfully');
+//        $user->personal_tasks()->where('project_id', $project->id)->get()->map(function($task){
+//            $task->project_id = null;
+//            $task->save();
+//        });;
+        apiResponse(new ProjectResource($project),
+            'user revoked to project successfully'
+        );
     }
 
     public function update(ProjectUpdateRequest $request, Project $project)
     {
         $project->update($request->validated());
-        return apiResponse($project);
+        return apiResponse(new ProjectResource($project));
     }
 
-    public function destroy(Project $project)
+    public function destroy(ProjectDeleteRequest $request,Project $project)
     {
         $project->delete();
-        return response()->json('success');
+        return apiResponse(null , 'delete successfully', 200);
     }
 }

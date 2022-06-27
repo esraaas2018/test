@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PersonalTaskController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
@@ -32,7 +33,8 @@ Route::post('/login', [UserController::class, 'login']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/logout', [UserController::class, 'logout']);
     Route::apiResource('projects', "ProjectController");
-
+    Route::post('/projects/{project}/addParticipant', [ProjectController::class ,'addUser' ]);
+    Route::post('/projects/{project}/revokeParticipant', [ProjectController::class ,'revokeUser' ]);
     Route::apiResource('sprints', "SprintController")->except('store');
     Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
 

@@ -24,7 +24,7 @@ class UserLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone_number' =>['required' , 'string' ,'max:255'],
+            'email' =>['required' , 'string' ,'max:255'],
             'password' => ['required','string', 'min:2', 'max:255' ],
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SprintStoreRequest;
 use App\Http\Requests\SprintUpdateRequest;
 use App\Http\Requests\TaskChangeStatusRequest;
+use App\Http\Requests\TaskDeleteRequest;
 use App\Http\Requests\TaskIndexRequest;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
@@ -38,18 +39,11 @@ class TaskController extends Controller
                 'sprint_id' => $sprint->id
             ]);
         return apiResponse($task, 'task created successfully', 201);
-
-        return response()->json('unauthorized',403);
     }
 
     public function show(Project $project, Sprint $sprint, Task $task)
     {
-        if (Gate::allows('view-task', [$project, $task])) {
-            return response()->json([
-                'task' => $task,
-            ], 200);
-        }
-        return response()->json('unauthorized', 403);
+            return apiResponse($task);
     }
 
     public function update(TaskUpdateRequest $request, Task $task)
@@ -69,13 +63,9 @@ class TaskController extends Controller
         return apiResponse($task);
     }
 
-    public function destroy(Project $project,Sprint $sprint,Task $task)
+    public function destroy(TaskDeleteRequest $request,Task $task)
     {
-        if(Gate::allows('delete-task',$project)){
-            $task->delete();
-            return response()->json('success');
-        }
-        return response()->json('unauthorized',403);
-
+        $task->delete();
+        return response()->json('success');
     }
 }
