@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SprintDeleteRequest;
+use App\Http\Requests\SprintOffRequest;
+use App\Http\Requests\SprintRunRequest;
 use App\Http\Requests\SprintShowRequest;
 use App\Http\Requests\SprintStoreRequest;
 use App\Http\Requests\SprintUpdateRequest;
@@ -18,13 +20,14 @@ class SprintController extends Controller
     {
         $sprints = $project->sprints()->get();
         return apiResponse(SprintResource::collection($sprints));
-
     }
 
     public function store(Project $project,SprintStoreRequest $request )
     {
-        $sprint = Sprint::create($request->validated()+ ['project_id'=>$project->id]);
-        return apiResponse(new SprintResource($sprint));
+        $sprint = Sprint::create($request->validated()+ [
+            'project_id'=>$project->id,'status'=>false
+            ]);
+        return apiResponse(new SprintResource($sprint),'sprint created successfully',201);
     }
 
     public function show(SprintShowRequest $request, Sprint $sprint)
@@ -35,12 +38,31 @@ class SprintController extends Controller
     public function update(SprintUpdateRequest $request, Project $project,Sprint $sprint)
     {
         $sprint->update($request->validated());
-        return apiResponse(new SprintResource($sprint));
+        return apiResponse(new SprintResource($sprint),'sprint updated successfully');
 
     }
+
     public function destroy(SprintDeleteRequest $request,Project $project,Sprint $sprint)
     {
         $sprint->delete();
-        return response()->json('success');
+        return apiResponse(null,'sprint deleted successfully');
+    }
+
+    public function runSprint(SprintRunRequest $request ,Sprint $sprint)
+    {
+        $sprints =$sprint->project->sprints()->where('status',true)->first();
+        if($sprints){
+            return response()->json('you can not turn on');
+        }
+        $sprint->status = true;
+        $sprint->save();
+        return apiResponse(new SprintResource($sprint),'sprint turn on successfully');
+    }
+
+    public function offSprint(SprintOffRequest $request ,Sprint $sprint)
+    {
+        $sprint->status = false;
+        $sprint->save();
+        return apiResponse(new SprintResource($sprint),'sprint turn off successfully');
     }
 }

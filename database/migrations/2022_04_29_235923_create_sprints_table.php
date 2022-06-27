@@ -19,6 +19,7 @@ class CreateSprintsTable extends Migration
             $table->string('description')->nullable();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->date('deadline');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

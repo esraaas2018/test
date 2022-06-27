@@ -12,7 +12,8 @@ class Sprint extends Model
         'name',
         'deadline',
         'project_id',
-        'description'
+        'description',
+        'status'
     ];
 
     public function project()

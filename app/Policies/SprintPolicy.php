@@ -12,7 +12,7 @@ class SprintPolicy
     public static function view(User  $user, Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isParticipant($project);
+        return $user->isParticipant($project)||$user->isAdmin($project);
     }
 
     public static function create(User $user, Project $project)
@@ -26,6 +26,18 @@ class SprintPolicy
         return $user->isAdmin($project);
     }
     public static function delete(User $user, Sprint $sprint)
+    {
+        $project = $sprint->project;
+        return $user->isAdmin($project);
+    }
+
+    public static function run(User $user, Sprint $sprint)
+    {
+        $project = $sprint->project;
+        return $user->isAdmin($project);
+    }
+
+    public static function off(User $user, Sprint $sprint)
     {
         $project = $sprint->project;
         return $user->isAdmin($project);

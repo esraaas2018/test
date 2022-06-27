@@ -35,9 +35,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('projects', "ProjectController");
     Route::post('/projects/{project}/addParticipant', [ProjectController::class ,'addUser' ]);
     Route::post('/projects/{project}/revokeParticipant', [ProjectController::class ,'revokeUser' ]);
-    Route::apiResource('sprints', "SprintController")->except('store');
+    Route::apiResource('sprints', "SprintController")->except(['store','index']);
     Route::post('/projects/{project}/sprints', [SprintController::class, 'store']);
-
+    Route::get('/projects/{project}/sprints', [SprintController::class, 'index']);
+    Route::post('/sprints/{sprint}/runSprint', [SprintController::class, 'runSprint']);
+    Route::post('/sprints/{sprint}/offSprint', [SprintController::class, 'offSprint']);
     Route::apiResource('tasks', "TaskController")->except(['store', 'index']);
 
     //board
