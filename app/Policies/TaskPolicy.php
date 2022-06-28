@@ -20,9 +20,9 @@ class TaskPolicy
     public static function view(User $user,Task $task)
     {
         $project = $task->project;
-        if($user->role($project) === 'admin'){
+        if($project && $user->role($project) === 'admin'){
             $allow = true;
-        }else if($user->role($project) === 'assignee'){
+        }else if($project && $user->role($project) === 'assignee'){
             $allow = $user->id == $task->user_id;
         }else
             $allow = false;
@@ -33,25 +33,25 @@ class TaskPolicy
     public static function create(User $user,Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 
     public static function Update(User $user, Task $task)
     {
         $project = $task->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 
     public static function assignToUser(User $user, Project $project, User $assignee){
-        return $user->isAdmin($project) && $assignee->isParticipant($project);
+        return $project && $user->isAdmin($project) && $assignee->isParticipant($project);
     }
 
     public static function changeStatus(User $user,Task $task)
     {
         $project = $task->project;
-        if($user->role($project) === 'admin'){
+        if($project && $user->role($project) === 'admin'){
             $allow = true;
-        }else if($user->role($project) === 'assignee'){
+        }else if($project && $user->role($project) === 'assignee'){
             $allow = $user->id == $task->user_id;
         }else
             $allow = false;
@@ -62,6 +62,6 @@ class TaskPolicy
     public static function delete(User $user, Task $task)
     {
         $project = $task->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 }

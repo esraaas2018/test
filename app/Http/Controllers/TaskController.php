@@ -27,7 +27,8 @@ class TaskController extends Controller
     public function index(TaskIndexRequest $request, Project $project)
     {
 //        TaskScope applied
-        $tasks = $project->sprints()->where('status',true)->firstOrFail()->tasks()->whereHas('status', function ($q) use ($request) {
+        $tasks = $project->sprints()->where('status',true)->firstOrFail()
+            ->tasks()->whereHas('status', function ($q) use ($request) {
             return $q->where('id', $request->status_id);
         })->get();
 

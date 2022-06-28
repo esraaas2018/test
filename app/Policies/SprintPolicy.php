@@ -23,23 +23,23 @@ class SprintPolicy
     public static function update(User $user, Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
     public static function delete(User $user, Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 
     public static function run(User $user, Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 
     public static function off(User $user, Sprint $sprint)
     {
         $project = $sprint->project;
-        return $user->isAdmin($project);
+        return $project && $user->isAdmin($project);
     }
 }
