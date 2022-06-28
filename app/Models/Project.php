@@ -24,10 +24,10 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new ProjectScope());
-    }
+//    protected static function booted()
+//    {
+//        static::addGlobalScope(new ProjectScope());
+//    }
 
     public function sprints()
     {

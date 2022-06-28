@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\True_;
 
 class TaskUpdateRequest extends FormRequest
@@ -15,7 +16,7 @@ class TaskUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return TaskPolicy::Update(Auth::user(),$this->route()->task);
     }
 
     /**
